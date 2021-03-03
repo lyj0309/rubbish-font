@@ -6,9 +6,16 @@
       <div>
         登录/注册
       </div>
-      用户名：<input v-model="user"/>
       <br>
-      密码：<input v-model="pwd"/>
+      用户类型：
+      <select v-model="type">
+        <option value="居民">居民</option>
+        <option value="回收机构">回收机构</option>
+      </select>
+      <br><br>
+      用户名：<input v-model="user"/>
+      <br><br>
+      密码：<input type="password" v-model="pwd"/>
       <br><br>
       <button v-on:click="login">登录</button>
       &nbsp;&nbsp;&nbsp;&nbsp;
@@ -23,10 +30,10 @@ export default {
   data() {
     return {
       user: "",
-      pwd: ""
+      pwd: "",
+      type: "居民"
     }
   },
-  props: [""],
   methods: {   //定义方法对象
     register: function () {
       if (this.user === '' || this.pwd === '') {
@@ -35,7 +42,8 @@ export default {
       }
       this.$axios.post("/api/register", {
         user: this.user,
-        pwd: this.pwd
+        pwd: this.pwd,
+        type: this.type
       })
           .then(res => {
             console.log(res)
@@ -49,7 +57,7 @@ export default {
       }
       this.$axios.post("/api/login", {
         user: this.user,
-        pwd: this.pwd
+        pwd: this.pwd,
       })
           .then(res => {
             console.log(res)
@@ -64,7 +72,7 @@ export default {
 
 <style scoped>
 .login {
-  margin-top: 13rem;
+  margin-top: 12rem;
   display: flex;
   justify-content: center;
 }

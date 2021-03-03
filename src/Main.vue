@@ -1,13 +1,18 @@
 <template>
   <nav v-if="login">
-    <div style="margin-left: 90%;display: inline-block">
-      {{ user }}
+    <div style="margin-left: 75%;display: inline-block">
+      用户类型：{{ type }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用户名：{{ user }}
       <button v-on:click="logout">登出</button>
     </div>
   </nav>
-  <Recycle v-if="login"></Recycle>
-  <Search v-if="login"></Search>
-  <welcome v-else></welcome>
+  <div v-if="login">
+    <button @click="sw(0)">搜索垃圾</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <button @click="sw(1)">回收信息</button>
+  </div>
+  <Search v-if="login && id===0"></Search>
+  <Recycle :user="user" :type="type" v-if="login && id===1"></Recycle>
+  <welcome v-if="!login"></welcome>
 </template>
 
 <script>
@@ -21,31 +26,16 @@ export default {
   data() {
     return {
       user: "",
-      login: ""
+      login: "",
+      type:"",
+      id:0
     }
   },
-  beforeMount() {
-    function getCookie(a) {
-      // console.log(a)
-      let d;
-      let b = document.cookie;
-      // console.log(b)
-      let c = b.split(";");
-      for (let e = 0; e < c.length; e++) {
-        let f = c[e].split("=");
-        if (a === f[0].toString().trim()) {
-          d = f[1];
-          break;
-        }
-      }
-      if (void 0 === d || null == d) {
-        return "";
-      } else {
-        return unescape(d.trim());
-      }
-    }
 
-    let session = getCookie(`session`)
+  beforeMount() {
+    this.type = this.$getCookie(`type`)
+    console.log(this.type)
+    let session = this.$getCookie(`session`)
     this.login = session !== '';
     this.user = session.slice(19,);
     console.log(this.login)
@@ -65,28 +55,12 @@ export default {
     },
     loginm: function () {
       this.login = true
-      function getCookie(a) {
-        // console.log(a)
-        let d;
-        let b = document.cookie;
-        // console.log(b)
-        let c = b.split(";");
-        for (let e = 0; e < c.length; e++) {
-          let f = c[e].split("=");
-          if (a === f[0].toString().trim()) {
-            d = f[1];
-            break;
-          }
-        }
-        if (void 0 === d || null == d) {
-          return "";
-        } else {
-          return unescape(d.trim());
-        }
-      }
-
-      let session = getCookie(`session`)
+      let session = this.$getCookie(`session`)
       this.user = session.slice(19,);
+      this.type = this.$getCookie(`type`)
+    },
+    sw(id){
+      this.id = id
     }
   },
 
