@@ -1,18 +1,22 @@
 <template>
-  <nav v-if="login">
-    <div style="margin-left: 75%;display: inline-block">
-      用户类型：{{ type }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用户名：{{ user }}
-      <button v-on:click="logout">登出</button>
+  <div v-if="login" class="b">
+    <nav >
+      <div style="margin-left: 75%;display: inline-block">
+        用户类型：{{ type }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用户名：{{ user }}
+        <el-button v-on:click="logout">登出</el-button>
+      </div>
+    </nav>
+    <div>
+      <el-tabs v-model="id" @tab-click="handleClick">
+        <el-tab-pane label="搜索垃圾" name="one">搜索垃圾</el-tab-pane>
+        <el-tab-pane label="回收信息" name="two">回收信息</el-tab-pane>
+      </el-tabs>
     </div>
-  </nav>
-  <div v-if="login">
-    <button @click="sw(0)">搜索垃圾</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <button @click="sw(1)">回收信息</button>
+    <Search v-if=" id==='one'"></Search>
+    <Recycle :user="user" :type="type" v-if="id !=='one'"></Recycle>
   </div>
-  <Search v-if="login && id===0"></Search>
-  <Recycle :user="user" :type="type" v-if="login && id===1"></Recycle>
   <welcome v-if="!login"></welcome>
+
 </template>
 
 <script>
@@ -27,8 +31,8 @@ export default {
     return {
       user: "",
       login: "",
-      type:"",
-      id:0
+      type: "",
+      id: "one",
     }
   },
 
@@ -41,6 +45,11 @@ export default {
     console.log(this.login)
   },
   methods: {
+    handleClick(tab, event) {
+      console.log(tab, event);
+      console.log(this.id)
+
+    },
     logout: function () {
       function setCookie(cname, cvalue, exdays) {
         let d = new Date();
@@ -59,9 +68,7 @@ export default {
       this.user = session.slice(19,);
       this.type = this.$getCookie(`type`)
     },
-    sw(id){
-      this.id = id
-    }
+
   },
 
 }
@@ -70,5 +77,7 @@ export default {
 </script>
 
 <style scoped>
-
+.b{
+  padding: 2rem;
+}
 </style>
